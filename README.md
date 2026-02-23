@@ -66,6 +66,16 @@ If Immich runs in Docker, internal paths like `/usr/src/app/upload/...` need to 
 | Container path (external) | `/external/photos` |
 | Host path (external) | `/path/to/your/photos` |
 
+## Important: Shared Filesystem Required
+
+This plugin creates **symlinks** to the original photo files. Both Jellyfin and the Immich storage must be accessible from the **same filesystem**.
+
+- **Same host**: Works out of the box — just configure the path mapping
+- **Different hosts**: Mount the Immich storage on the Jellyfin host via **NFS or SMB**, then configure path mapping accordingly
+- **Docker**: If Immich runs in Docker, map the container paths to the host paths where files are actually stored
+
+> File copy mode (for setups without shared storage) is not yet implemented but planned for a future release.
+
 ## How It Works
 
 1. The plugin fetches all albums (and optionally shared albums) from the Immich API
