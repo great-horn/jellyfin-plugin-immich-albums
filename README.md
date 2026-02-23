@@ -27,13 +27,13 @@ A Jellyfin plugin that syncs your [Immich](https://immich.app/) photo albums int
 1. In Jellyfin, go to **Dashboard → Plugins → Repositories**
 2. Add a new repository:
    - **Name**: `Immich Albums`
-   - **URL**: `https://raw.githubusercontent.com/aldebahran/jellyfin-plugin-immich-albums/main/manifest.json`
+   - **URL**: `https://raw.githubusercontent.com/great-horn/jellyfin-plugin-immich-albums/main/manifest.json`
 3. Go to **Catalog**, find **Immich Albums** and install it
 4. Restart Jellyfin
 
 ### Manual Installation
 
-1. Download the latest release ZIP from [Releases](https://github.com/aldebahran/jellyfin-plugin-immich-albums/releases)
+1. Download the latest release ZIP from [Releases](https://github.com/great-horn/jellyfin-plugin-immich-albums/releases)
 2. Extract to your Jellyfin plugins directory:
    - **macOS**: `~/Library/Application Support/jellyfin/plugins/ImmichAlbums_X.X.X.X/`
    - **Linux**: `/var/lib/jellyfin/plugins/ImmichAlbums_X.X.X.X/`

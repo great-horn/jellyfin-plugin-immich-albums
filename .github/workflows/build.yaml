@@ -41,14 +41,14 @@ jobs:
               "name": "Immich Albums",
               "description": "Sync Immich photo albums into Jellyfin via symlinks with HEIC conversion",
               "overview": "Browse your Immich albums in Jellyfin",
-              "owner": "aldebahran",
+              "owner": "great-horn",
               "category": "Photos",
               "versions": [
                 {
                   "version": "${VERSION}",
                   "changelog": "Release ${VERSION}",
                   "targetAbi": "10.11.0.0",
-                  "sourceUrl": "https://github.com/aldebahran/jellyfin-plugin-immich-albums/releases/download/v${VERSION}/immich-albums-${VERSION}.zip",
+                  "sourceUrl": "https://github.com/great-horn/jellyfin-plugin-immich-albums/releases/download/v${VERSION}/immich-albums-${VERSION}.zip",
                   "checksum": "${CHECKSUM}",
                   "timestamp": "${TIMESTAMP}"
                 }

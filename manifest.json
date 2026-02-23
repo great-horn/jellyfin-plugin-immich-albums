@@ -4,7 +4,7 @@
     "name": "Immich Albums",
     "description": "Sync Immich photo albums into Jellyfin via symlinks with HEIC conversion",
     "overview": "Browse your Immich albums in Jellyfin",
-    "owner": "aldebahran",
+    "owner": "great-horn",
     "category": "Photos",
     "versions": []
   }
