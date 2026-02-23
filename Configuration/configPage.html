@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Immich Albums</title>
+</head>
+<body>
+    <div id="ImmichAlbumsConfigPage" data-role="page" class="page type-interior pluginConfigurationPage"
+         data-require="emby-input,emby-button,emby-checkbox,emby-select">
+        <div data-role="content">
+            <div class="content-primary">
+                <form id="ImmichAlbumsConfigForm">
+                    <div class="sectionTitleContainer">
+                        <h2 class="sectionTitle">Immich Albums - Configuration</h2>
+                    </div>
+
+                    <div class="verticalSection">
+                        <h3 class="sectionTitle">Connexion Immich</h3>
+
+                        <div class="inputContainer">
+                            <label class="inputLabel" for="ImmichApiUrl">URL API Immich</label>
+                            <input id="ImmichApiUrl" type="text" is="emby-input" />
+                            <div class="fieldDescription">Ex: http://localhost:2283</div>
+                        </div>
+
+                        <div class="inputContainer">
+                            <label class="inputLabel" for="ImmichApiToken">Token API</label>
+                            <input id="ImmichApiToken" type="password" is="emby-input" />
+                            <div class="fieldDescription">Token API Immich (Settings > API Keys)</div>
+                        </div>
+
+                        <button id="btnTestConnection" type="button" is="emby-button" class="raised button-submit">
+                            Tester la connexion
+                        </button>
+                        <span id="testResult" style="margin-left: 10px;"></span>
+                    </div>
+
+                    <div class="verticalSection">
+                        <h3 class="sectionTitle">Synchronisation</h3>
+
+                        <div class="inputContainer">
+                            <label class="inputLabel" for="SyncFolderPath">Dossier de synchronisation</label>
+                            <input id="SyncFolderPath" type="text" is="emby-input" />
+                            <div class="fieldDescription">Dossier ou les symlinks seront crees. Ajouter ce dossier comme bibliotheque Jellyfin.</div>
+                        </div>
+
+                        <div class="inputContainer">
+                            <label class="inputLabel" for="SyncIntervalHours">Intervalle de sync (heures)</label>
+                            <input id="SyncIntervalHours" type="number" min="1" max="168" is="emby-input" />
+                        </div>
+
+                        <div class="checkboxContainer">
+                            <label>
+                                <input id="IncludeSharedAlbums" type="checkbox" is="emby-checkbox" />
+                                <span>Inclure les albums partages</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="verticalSection">
+                        <h3 class="sectionTitle">Mapping des chemins (conteneur &rarr; host)</h3>
+                        <div class="fieldDescription" style="margin-bottom: 10px;">
+                            Immich stocke les chemins relatifs au conteneur Docker. Configurez la correspondance vers les chemins reels sur le host.
+                        </div>
+
+                        <div class="inputContainer">
+                            <label class="inputLabel" for="ContainerUploadPath">Chemin conteneur (upload)</label>
+                            <input id="ContainerUploadPath" type="text" is="emby-input" />
+                        </div>
+
+                        <div class="inputContainer">
+                            <label class="inputLabel" for="HostUploadPath">Chemin host (upload)</label>
+                            <input id="HostUploadPath" type="text" is="emby-input" />
+                        </div>
+
+                        <div class="inputContainer">
+                            <label class="inputLabel" for="ContainerExternalPath">Chemin conteneur (external)</label>
+                            <input id="ContainerExternalPath" type="text" is="emby-input" />
+                        </div>
+
+                        <div class="inputContainer">
+                            <label class="inputLabel" for="HostExternalPath">Chemin host (external)</label>
+                            <input id="HostExternalPath" type="text" is="emby-input" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <button is="emby-button" type="submit" class="raised button-submit block">
+                            <span>Sauvegarder</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var ImmichAlbumsConfig = {
+                pluginUniqueId: 'f3a2b1c0-d4e5-6f78-9a0b-c1d2e3f4a5b6'
+            };
+
+            document.querySelector('#ImmichAlbumsConfigPage')
+                .addEventListener('pageshow', function () {
+                    Dashboard.showLoadingMsg();
+                    ApiClient.getPluginConfiguration(ImmichAlbumsConfig.pluginUniqueId).then(function (config) {
+                        document.querySelector('#ImmichApiUrl').value = config.ImmichApiUrl || '';
+                        document.querySelector('#ImmichApiToken').value = config.ImmichApiToken || '';
+                        document.querySelector('#SyncFolderPath').value = config.SyncFolderPath || '';
+                        document.querySelector('#SyncIntervalHours').value = config.SyncIntervalHours || 6;
+                        document.querySelector('#ContainerUploadPath').value = config.ContainerUploadPath || '';
+                        document.querySelector('#HostUploadPath').value = config.HostUploadPath || '';
+                        document.querySelector('#ContainerExternalPath').value = config.ContainerExternalPath || '';
+                        document.querySelector('#HostExternalPath').value = config.HostExternalPath || '';
+                        document.querySelector('#IncludeSharedAlbums').checked = config.IncludeSharedAlbums !== false;
+                        Dashboard.hideLoadingMsg();
+                    });
+                });
+
+            document.querySelector('#ImmichAlbumsConfigForm')
+                .addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    Dashboard.showLoadingMsg();
+                    ApiClient.getPluginConfiguration(ImmichAlbumsConfig.pluginUniqueId).then(function (config) {
+                        config.ImmichApiUrl = document.querySelector('#ImmichApiUrl').value;
+                        config.ImmichApiToken = document.querySelector('#ImmichApiToken').value;
+                        config.SyncFolderPath = document.querySelector('#SyncFolderPath').value;
+                        config.SyncIntervalHours = parseInt(document.querySelector('#SyncIntervalHours').value) || 6;
+                        config.ContainerUploadPath = document.querySelector('#ContainerUploadPath').value;
+                        config.HostUploadPath = document.querySelector('#HostUploadPath').value;
+                        config.ContainerExternalPath = document.querySelector('#ContainerExternalPath').value;
+                        config.HostExternalPath = document.querySelector('#HostExternalPath').value;
+                        config.IncludeSharedAlbums = document.querySelector('#IncludeSharedAlbums').checked;
+                        ApiClient.updatePluginConfiguration(ImmichAlbumsConfig.pluginUniqueId, config).then(function () {
+                            Dashboard.processPluginConfigurationUpdateResult();
+                        });
+                    });
+                    return false;
+                });
+
+            document.querySelector('#btnTestConnection')
+                .addEventListener('click', function () {
+                    var resultSpan = document.querySelector('#testResult');
+                    resultSpan.textContent = 'Test en cours...';
+                    resultSpan.style.color = '';
+                    ApiClient.ajax({
+                        type: 'GET',
+                        url: ApiClient.getUrl('ImmichAlbums/TestConnection')
+                    }).then(function (response) {
+                        var data = JSON.parse(response);
+                        resultSpan.textContent = data.message;
+                        resultSpan.style.color = data.success ? '#4caf50' : '#f44336';
+                    }).catch(function () {
+                        resultSpan.textContent = 'Erreur de communication avec le serveur';
+                        resultSpan.style.color = '#f44336';
+                    });
+                });
+        </script>
+    </div>
+</body>
+</html>

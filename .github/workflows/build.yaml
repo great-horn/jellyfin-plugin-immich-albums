@@ -1,0 +1,75 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Build
+        run: dotnet build -c Release
+
+      - name: Prepare release artifacts
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mkdir -p artifacts/ImmichAlbums_${VERSION}
+          cp bin/Release/net9.0/Jellyfin.Plugin.ImmichAlbums.dll artifacts/ImmichAlbums_${VERSION}/
+          cd artifacts && zip -r ../immich-albums-${VERSION}.zip ImmichAlbums_${VERSION}/
+
+      - name: Update manifest
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          CHECKSUM=$(md5sum immich-albums-${VERSION}.zip | awk '{print $1}')
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          cat > manifest.json << MANIFEST_EOF
+          [
+            {
+              "guid": "f3a2b1c0-d4e5-6f78-9a0b-c1d2e3f4a5b6",
+              "name": "Immich Albums",
+              "description": "Sync Immich photo albums into Jellyfin via symlinks with HEIC conversion",
+              "overview": "Browse your Immich albums in Jellyfin",
+              "owner": "aldebahran",
+              "category": "Photos",
+              "versions": [
+                {
+                  "version": "${VERSION}",
+                  "changelog": "Release ${VERSION}",
+                  "targetAbi": "10.11.0.0",
+                  "sourceUrl": "https://github.com/aldebahran/jellyfin-plugin-immich-albums/releases/download/v${VERSION}/immich-albums-${VERSION}.zip",
+                  "checksum": "${CHECKSUM}",
+                  "timestamp": "${TIMESTAMP}"
+                }
+              ]
+            }
+          ]
+          MANIFEST_EOF
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: immich-albums-*.zip
+          generate_release_notes: true
+
+      - name: Publish manifest to main branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git checkout main
+          cp manifest.json .
+          git add manifest.json
+          git diff --cached --quiet || git commit -m "Update manifest for ${GITHUB_REF_NAME}"
+          git push origin main

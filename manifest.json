@@ -1,0 +1,11 @@
+[
+  {
+    "guid": "f3a2b1c0-d4e5-6f78-9a0b-c1d2e3f4a5b6",
+    "name": "Immich Albums",
+    "description": "Sync Immich photo albums into Jellyfin via symlinks with HEIC conversion",
+    "overview": "Browse your Immich albums in Jellyfin",
+    "owner": "aldebahran",
+    "category": "Photos",
+    "versions": []
+  }
+]
