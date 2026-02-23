@@ -17,7 +17,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 
     public override Guid Id => new Guid("f3a2b1c0-d4e5-6f78-9a0b-c1d2e3f4a5b6");
 
-    public override string Description => "Synchronise les albums Immich en bibliothèque Jellyfin via symlinks";
+    public override string Description => "Sync Immich photo albums into Jellyfin as photo libraries via symlinks";
 
     public Plugin(IApplicationPaths applicationPaths, IXmlSerializer xmlSerializer)
         : base(applicationPaths, xmlSerializer)

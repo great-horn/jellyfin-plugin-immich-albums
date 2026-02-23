@@ -30,16 +30,16 @@ public class ImmichController : ControllerBase
         var config = Plugin.Instance?.Configuration;
         if (config == null || string.IsNullOrEmpty(config.ImmichApiToken))
         {
-            return StatusCode(500, new { success = false, message = "Token API non configuré" });
+            return StatusCode(500, new { success = false, message = "API token not configured" });
         }
 
         using var client = new ImmichApiClient(config.ImmichApiUrl, config.ImmichApiToken, _logger);
         if (await client.TestConnectionAsync(cancellationToken).ConfigureAwait(false))
         {
             var albums = await client.GetAlbumsAsync(includeShared: false, cancellationToken).ConfigureAwait(false);
-            return Ok(new { success = true, message = $"Connecté — {albums.Count} albums trouvés" });
+            return Ok(new { success = true, message = $"Connected — {albums.Count} albums found" });
         }
 
-        return StatusCode(500, new { success = false, message = "Impossible de joindre Immich" });
+        return StatusCode(500, new { success = false, message = "Cannot connect to Immich" });
     }
 }

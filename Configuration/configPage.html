@@ -10,82 +10,82 @@
             <div class="content-primary">
                 <form id="ImmichAlbumsConfigForm">
                     <div class="sectionTitleContainer">
-                        <h2 class="sectionTitle">Immich Albums - Configuration</h2>
+                        <h2 class="sectionTitle">Immich Albums</h2>
                     </div>
 
                     <div class="verticalSection">
-                        <h3 class="sectionTitle">Connexion Immich</h3>
+                        <h3 class="sectionTitle">Immich Connection</h3>
 
                         <div class="inputContainer">
-                            <label class="inputLabel" for="ImmichApiUrl">URL API Immich</label>
+                            <label class="inputLabel" for="ImmichApiUrl">Immich API URL</label>
                             <input id="ImmichApiUrl" type="text" is="emby-input" />
-                            <div class="fieldDescription">Ex: http://localhost:2283</div>
+                            <div class="fieldDescription">e.g. http://localhost:2283</div>
                         </div>
 
                         <div class="inputContainer">
-                            <label class="inputLabel" for="ImmichApiToken">Token API</label>
+                            <label class="inputLabel" for="ImmichApiToken">API Token</label>
                             <input id="ImmichApiToken" type="password" is="emby-input" />
-                            <div class="fieldDescription">Token API Immich (Settings > API Keys)</div>
+                            <div class="fieldDescription">Immich API key (Settings &gt; API Keys in Immich)</div>
                         </div>
 
                         <button id="btnTestConnection" type="button" is="emby-button" class="raised button-submit">
-                            Tester la connexion
+                            Test Connection
                         </button>
                         <span id="testResult" style="margin-left: 10px;"></span>
                     </div>
 
                     <div class="verticalSection">
-                        <h3 class="sectionTitle">Synchronisation</h3>
+                        <h3 class="sectionTitle">Synchronization</h3>
 
                         <div class="inputContainer">
-                            <label class="inputLabel" for="SyncFolderPath">Dossier de synchronisation</label>
+                            <label class="inputLabel" for="SyncFolderPath">Sync Folder</label>
                             <input id="SyncFolderPath" type="text" is="emby-input" />
-                            <div class="fieldDescription">Dossier ou les symlinks seront crees. Ajouter ce dossier comme bibliotheque Jellyfin.</div>
+                            <div class="fieldDescription">Folder where symlinks will be created. Add this folder as a Jellyfin Photos library.</div>
                         </div>
 
                         <div class="inputContainer">
-                            <label class="inputLabel" for="SyncIntervalHours">Intervalle de sync (heures)</label>
+                            <label class="inputLabel" for="SyncIntervalHours">Sync Interval (hours)</label>
                             <input id="SyncIntervalHours" type="number" min="1" max="168" is="emby-input" />
                         </div>
 
                         <div class="checkboxContainer">
                             <label>
                                 <input id="IncludeSharedAlbums" type="checkbox" is="emby-checkbox" />
-                                <span>Inclure les albums partages</span>
+                                <span>Include shared albums</span>
                             </label>
                         </div>
                     </div>
 
                     <div class="verticalSection">
-                        <h3 class="sectionTitle">Mapping des chemins (conteneur &rarr; host)</h3>
+                        <h3 class="sectionTitle">Path Mapping (container &rarr; host)</h3>
                         <div class="fieldDescription" style="margin-bottom: 10px;">
-                            Immich stocke les chemins relatifs au conteneur Docker. Configurez la correspondance vers les chemins reels sur le host.
+                            Immich stores paths relative to its Docker container. Configure the mapping to actual host paths where files are stored.
                         </div>
 
                         <div class="inputContainer">
-                            <label class="inputLabel" for="ContainerUploadPath">Chemin conteneur (upload)</label>
+                            <label class="inputLabel" for="ContainerUploadPath">Container path (upload)</label>
                             <input id="ContainerUploadPath" type="text" is="emby-input" />
                         </div>
 
                         <div class="inputContainer">
-                            <label class="inputLabel" for="HostUploadPath">Chemin host (upload)</label>
+                            <label class="inputLabel" for="HostUploadPath">Host path (upload)</label>
                             <input id="HostUploadPath" type="text" is="emby-input" />
                         </div>
 
                         <div class="inputContainer">
-                            <label class="inputLabel" for="ContainerExternalPath">Chemin conteneur (external)</label>
+                            <label class="inputLabel" for="ContainerExternalPath">Container path (external library)</label>
                             <input id="ContainerExternalPath" type="text" is="emby-input" />
                         </div>
 
                         <div class="inputContainer">
-                            <label class="inputLabel" for="HostExternalPath">Chemin host (external)</label>
+                            <label class="inputLabel" for="HostExternalPath">Host path (external library)</label>
                             <input id="HostExternalPath" type="text" is="emby-input" />
                         </div>
                     </div>
 
                     <div>
                         <button is="emby-button" type="submit" class="raised button-submit block">
-                            <span>Sauvegarder</span>
+                            <span>${Save}</span>
                         </button>
                     </div>
                 </form>
@@ -138,7 +138,7 @@
             document.querySelector('#btnTestConnection')
                 .addEventListener('click', function () {
                     var resultSpan = document.querySelector('#testResult');
-                    resultSpan.textContent = 'Test en cours...';
+                    resultSpan.textContent = 'Testing...';
                     resultSpan.style.color = '';
                     ApiClient.ajax({
                         type: 'GET',
@@ -148,7 +148,7 @@
                         resultSpan.textContent = data.message;
                         resultSpan.style.color = data.success ? '#4caf50' : '#f44336';
                     }).catch(function () {
-                        resultSpan.textContent = 'Erreur de communication avec le serveur';
+                        resultSpan.textContent = 'Failed to communicate with server';
                         resultSpan.style.color = '#f44336';
                     });
                 });

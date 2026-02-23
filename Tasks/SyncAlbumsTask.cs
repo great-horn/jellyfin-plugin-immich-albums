@@ -20,7 +20,7 @@ public class SyncAlbumsTask : IScheduledTask
 
     public string Name => "Sync Immich Albums";
     public string Key => "ImmichAlbumsSync";
-    public string Description => "Synchronise les albums Immich en créant des symlinks (+ conversion HEIC→JPEG avec auto-orient)";
+    public string Description => "Sync Immich albums by creating symlinks (+ HEIC to JPEG conversion with auto-orient)";
     public string Category => "Immich Albums";
 
     public SyncAlbumsTask(ILogger<SyncAlbumsTask> logger)
