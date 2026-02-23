@@ -67,9 +67,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          cp manifest.json /tmp/manifest.json
+          git stash --include-untracked
           git fetch origin main
           git checkout main
-          cp manifest.json .
+          cp /tmp/manifest.json manifest.json
           git add manifest.json
           git diff --cached --quiet || git commit -m "Update manifest for ${GITHUB_REF_NAME}"
           git push origin main
