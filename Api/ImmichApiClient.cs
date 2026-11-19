@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -51,7 +52,43 @@ public class ImmichApiClient : IDisposable
 
     public async Task<ImmichAlbum?> GetAlbumDetailAsync(string albumId, CancellationToken cancellationToken)
     {
-        return await _httpClient.GetFromJsonAsync<ImmichAlbum>("/api/albums/" + albumId, cancellationToken).ConfigureAwait(false);
+        var album = await _httpClient.GetFromJsonAsync<ImmichAlbum>("/api/albums/" + albumId, cancellationToken).ConfigureAwait(false);
+        if (album == null)
+            return null;
+
+        var allAssets = new List<ImmichAsset>();
+        int page = 1;
+
+        while (true)
+        {
+            var payload = new
+            {
+                albumIds = new[] { albumId },
+                page = page,
+                size = 1000
+            };
+
+            var response = await _httpClient.PostAsJsonAsync("/api/search/metadata", payload, cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            var searchResult = await response.Content.ReadFromJsonAsync<ImmichSearchResponse>(cancellationToken: cancellationToken).ConfigureAwait(false);
+            var items = searchResult?.Assets?.Items;
+
+            if (items != null && items.Count > 0)
+            {
+                allAssets.AddRange(items);
+            }
+
+            if (string.IsNullOrEmpty(searchResult?.Assets?.NextPage))
+            {
+                break;
+            }
+
+            page++;
+        }
+
+        album.Assets = allAssets;
+        return album;
     }
 
     public async Task<bool> TestConnectionAsync(CancellationToken cancellationToken)
@@ -72,4 +109,20 @@ public class ImmichApiClient : IDisposable
     {
         _httpClient.Dispose();
     }
+
+    private sealed class ImmichSearchResponse
+    {
+        [JsonPropertyName("assets")]
+        public ImmichSearchAssetsSection? Assets { get; set; }
+    }
+
+    private sealed class ImmichSearchAssetsSection
+    {
+        [JsonPropertyName("items")]
+        public List<ImmichAsset>? Items { get; set; }
+
+        [JsonPropertyName("nextPage")]
+        public string? NextPage { get; set; }
+    }
 }
+
